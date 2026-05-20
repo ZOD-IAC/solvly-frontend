@@ -15,19 +15,19 @@ function MessagePopUp() {
 
   const config = {
     error: {
-      icon: <Bomb size={14} />,
+      icon: <Bomb size={16} />,
       dot: 'bg-rose-400',
       text: 'text-rose-400',
       // border: 'border-rose-400/20',
     },
     info: {
-      icon: <BadgeInfo size={14} />,
+      icon: <BadgeInfo size={16} />,
       dot: 'bg-blue-400',
       text: 'text-blue-400',
       // border: 'border-blue-400/20',
     },
     success: {
-      icon: <LaptopMinimalCheck size={14} />,
+      icon: <LaptopMinimalCheck size={16} />,
       dot: 'bg-emerald-400',
       text: 'text-emerald-400',
       // border: 'border-emerald-400/20',
@@ -50,7 +50,7 @@ function MessagePopUp() {
         className={`relative flex items-center gap-3 bg-[#111110] border text-white px-4 py-3 rounded-xl shadow-2xl max-w-[320px]`}
       >
         <div className={`shrink-0 ${text} flex items-center`}>{icon}</div>
-        <p className='text-[13px] text-white/80 leading-snug flex-1'>
+        <p className='font-mono text-[14px] text-white/80 leading-snug flex-1'>
           {message.message}
         </p>
         <button

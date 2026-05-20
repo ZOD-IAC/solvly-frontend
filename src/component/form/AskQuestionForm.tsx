@@ -93,15 +93,7 @@ const AskQuestionForm: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (!handleCheck()) {
-      dispatch(
-        showMessage({
-          message: 'All fields are required!',
-          messageType: 'error',
-        }),
-      );
-      return;
-    }
+    if (!handleCheck()) return;
 
     try {
       const data = await createQuestion({ ...formData, content });
