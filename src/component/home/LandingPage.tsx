@@ -2,11 +2,46 @@
 import React, { useState } from 'react';
 import { MessageSquare, Users, TrendingUp, Search } from 'lucide-react';
 import Button from '../Button/Button';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getQuestionList } from '@/api/question';
+import { showMessage } from '@/features/messageSlice';
 
 // Landing/Home Page Component
 const LandingPage = () => {
-  const { isAuthenticated } = useSelector((state:any) => state.auth);
+  const { isAuthenticated } = useSelector((state: any) => state.auth);
+  const [questions, setQuestion] = useState([]);
+  const dispatch = useDispatch();
+
+
+  const handleSearchQuestion = async (e) => {
+    const thread = e.target.value;
+    if (!thread) return;
+    try {
+      let param = {
+        title: thread,
+      }
+      const res = await getQuestionList(param)
+      if (!res.ok) {
+        dispatch(showMessage({
+          messageType: 'error',
+          message: res.message ?? "Unable to fetch Question!"
+        }))
+        return;
+      }
+
+      if (res?.questions?.length <= 0) {
+        dispatch(showMessage({
+          messageType: 'info',
+          message: res.message
+        }))
+        return
+      }
+      setQuestion(res?.questions)
+
+    } catch (error) {
+      console.warn(error, 'something went wrong!')
+    }
+  }
 
   return (
     <div className='min-h-screen bg-white'>
@@ -37,11 +72,19 @@ const LandingPage = () => {
         <div className='relative'>
           <Search className='absolute left-4 top-4 w-5 h-5 text-slate-400' />
           <input
+            onChange={handleSearchQuestion}
             type='text'
-            placeholder='Search questions, topics, or tags...'
+            placeholder='Search questions...?'
             className='w-full pl-12 pr-4 py-4 border-2 border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg'
           />
         </div>
+        {questions &&
+          <ul id="">
+            {questions.map((d) => (
+              <li key={d._id} value={d._id} className='w-full pl-2 pr-4 py-4 border-2 border-slate-300 mt-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg'>{d.title}</li>
+            ))}
+          </ul>
+        }
       </section>
 
       {/* Features */}
