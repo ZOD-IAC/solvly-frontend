@@ -1,0 +1,229 @@
+/* ── Keyframes ──────────────────────────────────────────────── */
+@keyframes fadeup {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scalein {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Page wrapper ───────────────────────────────────────────── */
+.page {
+  min-height: 100vh;
+  background: #fff;
+}
+
+/* ── Hero staggered entrance ────────────────────────────────── */
+.heroTitle {
+  animation: fadeup 0.6s ease both;
+}
+
+.heroSub {
+  animation: fadeup 0.6s 0.14s ease both;
+}
+
+.heroCta {
+  animation: fadeup 0.6s 0.26s ease both;
+}
+
+.heroSearch {
+  animation: fadeup 0.6s 0.38s ease both;
+}
+
+/* ── Scroll reveal ──────────────────────────────────────────── */
+/*
+  Applied via JS (IntersectionObserver).
+  We use :global here so the observer can toggle the class
+  on any element regardless of CSS-module scoping.
+*/
+:global(.lp-reveal) {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+:global(.lp-visible) {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Stats pop-in when parent becomes visible */
+:global(.lp-visible) :global(.lp-stat) {
+  animation: scalein 0.45s ease both;
+}
+
+:global(.lp-visible) :global(.lp-stat):nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+:global(.lp-visible) :global(.lp-stat):nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+/* ── Feature card ───────────────────────────────────────────── */
+.card {
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.09);
+}
+
+/* ── Search container ───────────────────────────────────────── */
+.searchContainer {
+  position: relative;
+  z-index: 100; /* keeps the dropdown above every section below */
+}
+
+/* ── Search input wrapper ───────────────────────────────────── */
+.searchWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 2px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 4px 12px 4px 16px;
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.searchWrap:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* ── Search input ───────────────────────────────────────────── */
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 12px 0;
+  background: transparent;
+  color: #0f172a;
+}
+
+/* ── Spinner icon ───────────────────────────────────────────── */
+.spinIcon {
+  animation: spin 0.8s linear infinite;
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+/* ── Search icon ────────────────────────────────────────────── */
+.searchIcon {
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+/* ── Clear button ───────────────────────────────────────────── */
+.clearBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  transition: color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.clearBtn:hover {
+  color: #64748b;
+}
+
+/* ── Dropdown shared base ───────────────────────────────────── */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.1);
+  z-index: 200;
+  animation: scalein 0.16s ease;
+  transform-origin: top center;
+}
+
+/* ── Results list ───────────────────────────────────────────── */
+.resultsList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resultsHeader {
+  padding: 8px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resultsCount {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.resultsLabel {
+  font-size: 12px;
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+.resultItem {
+  padding: 13px 18px;
+  border-bottom: 1px solid #f8fafc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: #1e293b;
+  transition: background 0.14s ease;
+}
+
+.resultItem:hover {
+  background: #eff6ff;
+}
+
+.resultIcon {
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+/* ── Empty state ────────────────────────────────────────────── */
+.emptyState {
+  padding: 22px 18px;
+  text-align: center;
+}
+
+.emptyText {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 6px;
+}
+
+.emptyLink {
+  font-size: 13px;
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.emptyLink:hover {
+  text-decoration: underline;
+}
