@@ -12,6 +12,7 @@ interface ButtonProps {
   onKeyDown?: () => void;
   disabled?: boolean;
   href?: string;
+  style?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -22,6 +23,7 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   disabled = false,
   href = '',
+  style
 }) => {
   const baseStyles =
     'font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2';
@@ -47,7 +49,7 @@ const Button: React.FC<ButtonProps> = ({
     return (
       <Link
         href={href}
-        className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${
+        className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${style} ${
           fullWidth ? 'w-full' : ''
         }`}
       >
@@ -61,7 +63,7 @@ const Button: React.FC<ButtonProps> = ({
       onKeyDown={onClick}
       onClick={onClick}
       disabled={disabled}
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${style} ${
         fullWidth ? 'w-full' : ''
       }`}
     >
