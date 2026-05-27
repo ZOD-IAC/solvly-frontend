@@ -40,7 +40,7 @@ const STATS = [
 ] as const;
 
 const LandingPage = () => {
-  const { isAuthenticated } = useSelector((state: any) => state.auth);
+  const { isAuthenticated, user } = useSelector((state: any) => state.auth);
   const [questions, setQuestion] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -222,9 +222,12 @@ const LandingPage = () => {
                 <p className={styles.emptyText}>
                   No questions found for <strong>"{searchQuery}"</strong>
                 </p>
-                <a href='/question/new' className={styles.emptyLink}>
-                  Ask this question →
-                </a>
+                {isAuthenticated ?
+                  (<Link href={`/profile/${user.id}/?tab=ask`} className={styles.emptyLink}>
+                    Ask this question →
+                  </Link>) : (<Link href='/register' className={styles.emptyLink}>
+                    Regsiter to Ask this question →
+                  </Link>)}
               </div>
             </div>
           )}

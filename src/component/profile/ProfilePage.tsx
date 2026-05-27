@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Answer, Badge, TabType } from '../../utils/contants/type';
+import { Badge, TabType } from '../../utils/contants/type';
 import { ProfileHeader } from './ProfileHeader';
 import { TabNavigation } from './TabNavigation';
 import { ProfileSidebar } from './ProfileSidebar';
@@ -10,12 +10,11 @@ import { AnswersTab } from './profile tabs/AnswerTab';
 import { ActivityTab } from './profile tabs/ActivityTab';
 import { SavedTab } from './profile tabs/SavedTab';
 import { BadgesTab } from './profile tabs/BadgeTab';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import AskQuestionForm from '../form/AskQuestionForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { showMessage } from '@/features/messageSlice';
 import { BASE_URL } from '@/utils/Setting';
-import { UserProfile } from '../../utils/contants/type';
 
 interface Id {
   userId: string;
@@ -23,6 +22,7 @@ interface Id {
 
 const ProfilePage: React.FC<Id> = ({ userId }) => {
   const param = useSearchParams();
+  const router = useRouter();
   const dispatch = useDispatch();
   const tab = param?.get('tab');
   const { isAuthenticated } = useSelector((state: any) => state.auth);
@@ -56,6 +56,13 @@ const ProfilePage: React.FC<Id> = ({ userId }) => {
   useEffect(() => {
     const onPopState = () => {
       try {
+        if (tab == 'ask' && !isAuthenticated) {
+          const query = new URLSearchParams(window.location.search);
+          query.set('tab', 'profile');
+          router.replace(`?${query.toString()}`)
+          return
+        }
+
         if (tab) {
           setActiveTab(tab as TabType);
         } else {
@@ -78,39 +85,6 @@ const ProfilePage: React.FC<Id> = ({ userId }) => {
     url.searchParams.set('tab', tab);
     window.history.pushState({}, '', url.toString());
   };
-
-  const answers: Answer[] = [
-    {
-      _id: '1e',
-      question: [],
-      questionId: 101,
-      questionTitle: 'How to handle CORS in Express.js?',
-      body: 'You can handle CORS in Express by using the cors middleware package. First install it: npm install cors. Then in your Express app: const cors = require("cors"); app.use(cors());. For more control, you can configure specific origins, methods, and headers.',
-      votes: 156,
-      isAccepted: true,
-      createdAt: '5 hours ago',
-    },
-    {
-      _id: '2e',
-      question: [],
-      questionId: 102,
-      questionTitle: 'MongoDB query optimization for large datasets',
-      body: 'For large datasets, proper indexing is crucial. Create compound indexes for frequently queried fields. Use explain() to analyze query performance. Consider using aggregation pipelines for complex queries and limit() with skip() for pagination.',
-      votes: 89,
-      isAccepted: true,
-      createdAt: '1 day ago',
-    },
-    {
-      _id: '3e',
-      question: [],
-      questionId: 103,
-      questionTitle: 'React useEffect cleanup function',
-      body: 'The cleanup function in useEffect is important for preventing memory leaks. It runs before the component unmounts and before re-running the effect. Return a function from useEffect that cancels subscriptions, clears timers, or aborts API calls.',
-      votes: 64,
-      isAccepted: false,
-      createdAt: '2 days ago',
-    },
-  ];
 
   const badges: Badge[] = [
     {
@@ -179,7 +153,7 @@ const ProfilePage: React.FC<Id> = ({ userId }) => {
             {activeTab === 'questions' && (
               <QuestionsTab question={data?.question} />
             )}
-            {activeTab === 'answers' && <AnswersTab answers={answers} />}
+            {activeTab === 'answers' && <AnswersTab />}
             {activeTab === 'badges' && <BadgesTab badges={badges} />}
             {activeTab === 'activity' && <ActivityTab />}
             {activeTab === 'saved' && <SavedTab userId={userId} />}

@@ -48,7 +48,7 @@ const AnswerCard: React.FC<{ answer: Answer }> = ({ answer }) => {
   );
 };
 
-export const AnswersTab: React.FC<AnswersTabProps> = () => {
+export const AnswersTab: React.FC = () => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [filter, setFilter] = useState<'all' | 'accepted'>('all');
   const { user } = useSelector((s: any) => s.auth);
@@ -90,21 +90,19 @@ export const AnswersTab: React.FC<AnswersTabProps> = () => {
         <div className='flex gap-2'>
           <button
             onClick={() => setFilter('all')}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
-              filter === 'all'
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-100 text-slate-700'
-            }`}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${filter === 'all'
+              ? 'bg-blue-600 text-white'
+              : 'bg-slate-100 text-slate-700'
+              }`}
           >
             All
           </button>
           <button
             onClick={() => setFilter('accepted')}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
-              filter === 'accepted'
-                ? 'bg-green-600 text-white'
-                : 'bg-slate-100 text-slate-700'
-            }`}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${filter === 'accepted'
+              ? 'bg-green-600 text-white'
+              : 'bg-slate-100 text-slate-700'
+              }`}
           >
             Accepted
           </button>

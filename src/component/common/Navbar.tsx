@@ -47,7 +47,6 @@ function Navbar() {
       console.warn(errMessage);
     } finally {
       dispatch(logout());
-      router?.push('/login');
       setMobileMenuOpen(false);
     }
   };
