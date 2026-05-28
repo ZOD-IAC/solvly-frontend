@@ -70,9 +70,10 @@ const InfoSidebar: React.FC = () => {
             {trendingTag.map(
               (tag: any, idx) => (
                 <div
+                  key={idx}
                   className='flex items-center justify-between text-sm'
                 >
-                  <span key={idx} className='text-slate-700 hover:text-blue-600 cursor-pointer'>
+                  <span className='text-slate-700'>
                     {tag?.name}
                   </span>
                   <span className='text-slate-400 text-xs'>+{tag?.count} added</span>
