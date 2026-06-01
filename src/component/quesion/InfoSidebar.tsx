@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // Stats and Info Sidebar Component
 const InfoSidebar: React.FC = () => {
   const dispatch = useDispatch();
+  const [trendingTag, setTrendingTag] = useState([]);
   const [statsData, setStatsData] = useState({
     answersToday: 0,
     questionsToday: 0,
@@ -27,6 +28,7 @@ const InfoSidebar: React.FC = () => {
         return;
       }
 
+      setTrendingTag(res.trendingTags)
       setStatsData(res.stats);
     };
 
@@ -36,7 +38,7 @@ const InfoSidebar: React.FC = () => {
   return (
     <div className='space-y-4'>
       {/* Quick Stats */}
-      <div className='bg-gradient-to-br from-[#3E3F29] to-[#1d1e12] text-white rounded-lg p-4'>
+      <div className='bg-linear-to-br from-[#3E3F29] to-[#1d1e12] text-white rounded-lg p-4'>
         <h3 className='font-semibold mb-3 flex items-center gap-2'>
           <TrendingUp className='w-5 h-5' />
           Today&apos;s Stats
@@ -58,27 +60,29 @@ const InfoSidebar: React.FC = () => {
       </div>
 
       {/* Trending Tags */}
-      <div className='bg-white border border-slate-200 rounded-lg p-4'>
-        <h3 className='font-semibold text-slate-800 mb-3 flex items-center gap-2'>
-          <Tag className='w-5 h-5' />
-          Trending Tags
-        </h3>
-        <div className='space-y-2'>
-          {['JavaScript', 'React', 'TypeScript', 'Node.js', 'MongoDB'].map(
-            (tag) => (
-              <div
-                key={tag}
-                className='flex items-center justify-between text-sm'
-              >
-                <span className='text-slate-700 hover:text-blue-600 cursor-pointer'>
-                  {tag}
-                </span>
-                <span className='text-slate-400 text-xs'>+125 today</span>
-              </div>
-            ),
-          )}
+      {trendingTag.length > 0 &&
+        <div className='bg-white border border-slate-200 rounded-lg p-4'>
+          <h3 className='font-semibold text-slate-800 mb-3 flex items-center gap-2'>
+            <Tag className='w-5 h-5' />
+            Trending Tags
+          </h3>
+          <div className='space-y-2'>
+            {trendingTag.map(
+              (tag: any, idx) => (
+                <div
+                  key={idx}
+                  className='flex items-center justify-between text-sm'
+                >
+                  <span className='text-slate-700'>
+                    {tag?.name}
+                  </span>
+                  <span className='text-slate-400 text-xs'>+{tag?.count} added</span>
+                </div>
+              ),
+            )}
+          </div>
         </div>
-      </div>
+      }
 
       {/* Guidelines */}
       <div className='bg-amber-50 border border-amber-200 rounded-lg p-4'>

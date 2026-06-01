@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Trophy,
   Medal,
@@ -17,6 +17,9 @@ import {
   ChevronUp,
   ChevronDown,
 } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { showMessage } from '@/features/messageSlice';
+import { getUsersByRanking } from '@/api/user';
 
 // ============================================
 // FILE: types/ranking.types.ts
@@ -100,11 +103,10 @@ const FilterBar: React.FC<FilterBarProps> = ({
                 <button
                   key={p}
                   onClick={() => onPeriodChange(p)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    period === p
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${period === p
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
                 >
                   {p === 'alltime'
                     ? 'All Time'
@@ -150,17 +152,17 @@ interface TopThreeCardProps {
 const TopThreeCard: React.FC<TopThreeCardProps> = ({ user, position }) => {
   const colors = {
     1: {
-      bg: 'from-amber-400 to-yellow-500',
+      bg: 'from-amber-400 to-yellow-600',
       badge: 'bg-amber-500',
       text: 'text-amber-600',
     },
     2: {
-      bg: 'from-slate-300 to-slate-400',
+      bg: 'from-slate-300 to-slate-600',
       badge: 'bg-slate-400',
       text: 'text-slate-600',
     },
     3: {
-      bg: 'from-orange-300 to-amber-400',
+      bg: 'from-orange-300 to-orange-600',
       badge: 'bg-orange-400',
       text: 'text-orange-600',
     },
@@ -174,14 +176,12 @@ const TopThreeCard: React.FC<TopThreeCardProps> = ({ user, position }) => {
 
   return (
     <div
-      className={`relative ${
-        position === 1 ? 'md:scale-110 md:z-10' : 'md:mt-8'
-      }`}
+      className={`relative`}
     >
-      <div className='bg-white rounded-2xl shadow-lg border-2 border-slate-200 overflow-hidden hover:shadow-xl transition-shadow'>
+      <div className='bg-white rounded-2xl shadow-lg border-2 border-slate-200 overflow-hidden hover:shadow-xl transition-shadow text-sha'>
         {/* Rank Badge */}
         <div
-          className={`absolute top-4 left-4 w-12 h-12 bg-gradient-to-br ${colors[position].bg} rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg z-10`}
+          className={`absolute top-4 left-4 w-12 h-12 bg-linear-to-br ${colors[position].bg} rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg z-10`}
         >
           {position}
         </div>
@@ -190,9 +190,9 @@ const TopThreeCard: React.FC<TopThreeCardProps> = ({ user, position }) => {
         <div className='absolute top-4 right-4 z-10'>{icons[position]}</div>
 
         {/* Avatar */}
-        <div className='pt-16 pb-6 px-6 text-center bg-gradient-to-br from-slate-50 to-white'>
+        <div className='pt-16 pb-6 px-6 text-center bg-linear-to-br from-slate-50 to-white'>
           <div
-            className={`w-24 h-24 bg-gradient-to-br ${colors[position].bg} rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4 shadow-lg ring-4 ring-white`}
+            className={`w-24 h-24 bg-linear-to-br ${colors[position].bg} rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4 shadow-lg ring-4 ring-white`}
           >
             {user.name
               .split(' ')
@@ -202,7 +202,7 @@ const TopThreeCard: React.FC<TopThreeCardProps> = ({ user, position }) => {
           <h3 className='text-xl font-bold text-slate-900 mb-1'>{user.name}</h3>
           <p className='text-slate-500 text-sm mb-2'>@{user.username}</p>
           <div
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${colors[position].bg} bg-gradient-to-r text-white font-bold text-lg shadow-sm`}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${colors[position].bg} bg-linear-to-r text-white font-bold text-lg shadow-sm`}
           >
             <Star className='w-5 h-5' />
             {user.reputation.toLocaleString()}
@@ -238,7 +238,7 @@ const TopThreeCard: React.FC<TopThreeCardProps> = ({ user, position }) => {
               <Award className='w-4 h-4 text-white' />
             </div>
             <span className='text-sm font-semibold text-slate-700'>
-              {user.badges.gold}
+              {user?.badges?.gold || 50}
             </span>
           </div>
           <div className='flex items-center gap-1'>
@@ -246,7 +246,7 @@ const TopThreeCard: React.FC<TopThreeCardProps> = ({ user, position }) => {
               <Award className='w-4 h-4 text-white' />
             </div>
             <span className='text-sm font-semibold text-slate-700'>
-              {user.badges.silver}
+              {user?.badges?.silver || 150}
             </span>
           </div>
           <div className='flex items-center gap-1'>
@@ -254,7 +254,7 @@ const TopThreeCard: React.FC<TopThreeCardProps> = ({ user, position }) => {
               <Award className='w-4 h-4 text-white' />
             </div>
             <span className='text-sm font-semibold text-slate-700'>
-              {user.badges.bronze}
+              {user?.badges?.bronze || 200}
             </span>
           </div>
         </div>
@@ -281,15 +281,14 @@ const UserRankCard: React.FC<UserRankCardProps> = ({ user }) => {
     <div className='bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-all hover:border-blue-300'>
       <div className='flex items-center gap-4'>
         {/* Rank */}
-        <div className='flex flex-col items-center min-w-[60px]'>
+        <div className='flex flex-col items-center min-w-15'>
           <span className={`text-2xl ${getRankColor(user.rank)}`}>
             #{user.rank}
           </span>
           {user.rankChange !== 'same' && (
             <div
-              className={`flex items-center gap-1 text-xs ${
-                user.rankChange === 'up' ? 'text-green-600' : 'text-red-600'
-              }`}
+              className={`flex items-center gap-1 text-xs ${user.rankChange === 'up' ? 'text-green-600' : 'text-red-600'
+                }`}
             >
               {user.rankChange === 'up' ? (
                 <ChevronUp className='w-3 h-3' />
@@ -302,7 +301,7 @@ const UserRankCard: React.FC<UserRankCardProps> = ({ user }) => {
         </div>
 
         {/* Avatar */}
-        <div className='w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-lg font-bold flex-shrink-0'>
+        <div className='w-14 h-14 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-lg font-bold shrink-0'>
           {user.name
             .split(' ')
             .map((n) => n[0])
@@ -358,15 +357,15 @@ const UserRankCard: React.FC<UserRankCardProps> = ({ user }) => {
         <div className='hidden md:flex gap-3 items-center'>
           <div className='flex items-center gap-1'>
             <div className='w-5 h-5 bg-amber-500 rounded-full'></div>
-            <span className='text-sm font-semibold'>{user.badges.gold}</span>
+            <span className='text-sm font-semibold'>{user?.badges?.gold || 50}</span>
           </div>
           <div className='flex items-center gap-1'>
             <div className='w-5 h-5 bg-slate-400 rounded-full'></div>
-            <span className='text-sm font-semibold'>{user.badges.silver}</span>
+            <span className='text-sm font-semibold'>{user?.badges?.silver || 15}</span>
           </div>
           <div className='flex items-center gap-1'>
             <div className='w-5 h-5 bg-orange-600 rounded-full'></div>
-            <span className='text-sm font-semibold'>{user.badges.bronze}</span>
+            <span className='text-sm font-semibold'>{user?.badges?.bronze || 25}</span>
           </div>
         </div>
       </div>
@@ -381,7 +380,7 @@ const StatsSidebar: React.FC = () => {
   return (
     <div className='space-y-4'>
       {/* Ranking Info */}
-      <div className='bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6'>
+      <div className='bg-linear-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6'>
         <h3 className='font-semibold text-slate-900 mb-4 flex items-center gap-2'>
           <Target className='w-5 h-5 text-blue-600' />
           How Rankings Work
@@ -390,19 +389,19 @@ const StatsSidebar: React.FC = () => {
           <p>Rankings are based on reputation points earned through:</p>
           <ul className='space-y-2 ml-4'>
             <li className='flex items-start gap-2'>
-              <Zap className='w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0' />
+              <Zap className='w-4 h-4 text-amber-500 mt-0.5 shrink-0' />
               <span>Asking quality questions</span>
             </li>
             <li className='flex items-start gap-2'>
-              <Zap className='w-4 h-4 text-green-500 mt-0.5 flex-shrink-0' />
+              <Zap className='w-4 h-4 text-green-500 mt-0.5 shrink-0' />
               <span>Providing helpful answers</span>
             </li>
             <li className='flex items-start gap-2'>
-              <Zap className='w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0' />
+              <Zap className='w-4 h-4 text-blue-500 mt-0.5 shrink-0' />
               <span>Getting upvotes and accepted answers</span>
             </li>
             <li className='flex items-start gap-2'>
-              <Zap className='w-4 h-4 text-purple-500 mt-0.5 flex-shrink-0' />
+              <Zap className='w-4 h-4 text-purple-500 mt-0.5 shrink-0' />
               <span>Contributing to the community</span>
             </li>
           </ul>
@@ -468,78 +467,39 @@ const StatsSidebar: React.FC = () => {
 // ============================================
 // FILE: pages/RankingPage.tsx
 // ============================================
+
+type Position = 1 | 2 | 3;
 const RankingPage: React.FC = () => {
   const [period, setPeriod] = useState<RankingPeriod>('alltime');
   const [category, setCategory] = useState<RankingCategory>('reputation');
+  const [users, setUser] = useState([]);
+  const [page , setPage] = useState(1);
+  const [totalUsers  ,setTotalUsers] = useState(0);
+  const remainingUsers = page == 1 ? users.slice(3) : users
+  const dispatch = useDispatch();
 
-  // Mock data
-  const topThree: User[] = [
-    {
-      id: 1,
-      rank: 1,
-      name: 'Sarah Johnson',
-      username: 'sarahdev',
-      avatar: '',
-      reputation: 125840,
-      badges: { gold: 45, silver: 120, bronze: 230 },
-      stats: { questions: 234, answers: 1567, accepted: 892 },
-      rankChange: 'same',
-      rankChangeValue: 0,
-      joinedDate: '2020-01-15',
-      location: 'San Francisco, CA',
-    },
-    {
-      id: 2,
-      rank: 2,
-      name: 'Michael Chen',
-      username: 'mchen',
-      avatar: '',
-      reputation: 98340,
-      badges: { gold: 38, silver: 95, bronze: 187 },
-      stats: { questions: 189, answers: 1234, accepted: 745 },
-      rankChange: 'up',
-      rankChangeValue: 1,
-      joinedDate: '2020-03-22',
-      location: 'New York, NY',
-    },
-    {
-      id: 3,
-      rank: 3,
-      name: 'Emma Wilson',
-      username: 'emmawilson',
-      avatar: '',
-      reputation: 87920,
-      badges: { gold: 32, silver: 88, bronze: 165 },
-      stats: { questions: 156, answers: 1089, accepted: 678 },
-      rankChange: 'down',
-      rankChangeValue: 1,
-      joinedDate: '2020-05-10',
-      location: 'London, UK',
-    },
-  ];
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const res = await getUsersByRanking(category);
 
-  const remainingUsers: User[] = Array.from({ length: 17 }, (_, i) => ({
-    id: i + 4,
-    rank: i + 4,
-    name: `User ${i + 4}`,
-    username: `user${i + 4}`,
-    avatar: '',
-    reputation: 75000 - i * 3500,
-    badges: {
-      gold: 30 - i,
-      silver: 80 - i * 2,
-      bronze: 150 - i * 5,
-    },
-    stats: {
-      questions: 140 - i * 5,
-      answers: 950 - i * 40,
-      accepted: 600 - i * 30,
-    },
-    rankChange: i % 3 === 0 ? 'up' : i % 3 === 1 ? 'down' : 'same',
-    rankChangeValue: i % 3 === 0 ? (i % 5) + 1 : i % 3 === 1 ? (i % 4) + 1 : 0,
-    joinedDate: '2020-06-01',
-    location: 'Various',
-  }));
+        if (!res.ok) {
+          dispatch(showMessage({
+            messageType: 'error',
+            messsage: res.message
+          }))
+          return;
+        }
+        setUser(res.data?.users)
+        setTotalUsers(res?.data?.total)
+        console.log(res.data, '<---- user data')
+      } catch (error) {
+        console.warn(error)
+      }
+    }
+
+    fetchUserData();
+  }, [])
 
   return (
     <div className='min-h-screen bg-slate-50'>
@@ -558,9 +518,9 @@ const RankingPage: React.FC = () => {
             Top Contributors
           </h2>
           <div className='grid md:grid-cols-3 gap-6'>
-            <TopThreeCard user={topThree[1]} position={2} />
-            <TopThreeCard user={topThree[0]} position={1} />
-            <TopThreeCard user={topThree[2]} position={3} />
+            {users.slice(0, 3).map((data, idx) => (
+              <TopThreeCard key={idx} user={data} position={(idx + 1) as Position} />
+            ))}
           </div>
         </div>
 
@@ -572,8 +532,8 @@ const RankingPage: React.FC = () => {
               All Rankings
             </h2>
             <div className='space-y-3'>
-              {remainingUsers.map((user) => (
-                <UserRankCard key={user.id} user={user} />
+              {remainingUsers.map((user : User) => (
+                <UserRankCard key={user._id} user={user} />
               ))}
             </div>
 
