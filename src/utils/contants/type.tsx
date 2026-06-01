@@ -12,6 +12,35 @@ export interface UserProfile {
   avatar: string;
   reputation: number;
   createdAt: Date;
+  badges: {
+    gold: number;
+    silver: number;
+    bronze: number;
+  };
+  stats: {
+    questions: number;
+    answers: number;
+    accepted: number;
+  };
+  questions : Question[];
+}
+
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  bio: string;
+  location: string;
+  website: string;
+  joinedDate: string;
+  avatar: string;
+  reputation: number;
+  createdAt: Date;
+  badges: {
+    gold: number;
+    silver: number;
+    bronze: number;
+  };
   stats: {
     questions: number;
     answers: number;
