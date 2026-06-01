@@ -20,7 +20,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { showMessage } from '@/features/messageSlice';
 import { getUsersByRanking } from '@/api/user';
-import { UserProfile } from '@/utils/contants/type';
+import { User } from '@/utils/contants/type';
 
 type RankingPeriod = 'weekly' | 'monthly' | 'yearly' | 'alltime';
 type RankingCategory = 'reputation' | 'answers' | 'questions' | 'accepted';
@@ -30,7 +30,7 @@ type RankingCategory = 'reputation' | 'answers' | 'questions' | 'accepted';
 // ============================================
 const RankingHeader: React.FC = () => {
   return (
-    <div className='bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 text-white py-12'>
+    <div className='bg-linear-to-r from-amber-500 via-yellow-500 to-amber-600 text-white py-12'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex items-center justify-center gap-3 mb-4'>
           <Trophy className='w-12 h-12' />
@@ -120,7 +120,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
 // FILE: components/ranking/TopThreeCard.tsx
 // ============================================
 interface TopThreeCardProps {
-  user: UserProfile;
+  user: User;
   position: 1 | 2 | 3;
 }
 
@@ -242,7 +242,7 @@ const TopThreeCard: React.FC<TopThreeCardProps> = ({ user, position }) => {
 // FILE: components/ranking/UserRankCard.tsx
 // ============================================
 interface UserRankCardProps {
-  user: UserProfile;
+  user: User;
 }
 
 const UserRankCard: React.FC<UserRankCardProps> = ({ user }) => {
@@ -448,7 +448,7 @@ const USERS_PER_PAGE = 10; // users per page from API
 const RankingPage: React.FC = () => {
   // const [period, setPeriod] = useState<RankingPeriod>('alltime');
   const [category, setCategory] = useState<RankingCategory>('reputation');
-  const [users, setUsers] = useState<UserProfile[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -551,7 +551,7 @@ const RankingPage: React.FC = () => {
               </div>
             ) : (
               <div className='space-y-3'>
-                {remainingUsers.map((user: UserProfile) => (
+                {remainingUsers.map((user: User) => (
                   <UserRankCard key={user._id} user={user} />
                 ))}
               </div>
