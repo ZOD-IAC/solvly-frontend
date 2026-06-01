@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Trophy,
   Medal,
@@ -49,16 +49,16 @@ const RankingHeader: React.FC = () => {
 // FILE: components/ranking/FilterBar.tsx
 // ============================================
 interface FilterBarProps {
-  period: RankingPeriod;
+  period?: RankingPeriod;
   category: RankingCategory;
-  onPeriodChange: (period: RankingPeriod) => void;
+  onPeriodChange?: (period: RankingPeriod) => void;
   onCategoryChange: (category: RankingCategory) => void;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
-  period,
+  // period,
   category,
-  onPeriodChange,
+  // onPeriodChange,
   onCategoryChange,
 }) => {
   return (
@@ -66,7 +66,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4'>
         <div className='flex flex-col md:flex-row gap-4 items-center justify-between'>
           {/* Period Filter */}
-          <div className='flex items-center gap-2 flex-wrap'>
+          {/* <div className='flex items-center gap-2 flex-wrap'>
             <span className='text-sm font-medium text-slate-700 flex items-center gap-2'>
               <Calendar className='w-4 h-4' />
               Period:
@@ -89,7 +89,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                 </button>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Category Filter */}
           <div className='flex items-center gap-2 flex-wrap'>
@@ -444,95 +444,160 @@ const StatsSidebar: React.FC = () => {
 // ============================================
 
 type Position = 1 | 2 | 3;
+const USERS_PER_PAGE = 10; // users per page from API
 const RankingPage: React.FC = () => {
-  const [period, setPeriod] = useState<RankingPeriod>('alltime');
+  // const [period, setPeriod] = useState<RankingPeriod>('alltime');
   const [category, setCategory] = useState<RankingCategory>('reputation');
-  const [users, setUser] = useState([]);
+  const [users, setUsers] = useState<UserProfile[]>([]);
   const [page, setPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
-  const remainingUsers = page == 1 ? users.slice(3) : users
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
+  const totalPages = Math.ceil(totalUsers / USERS_PER_PAGE);
+
+  // Fix 3: memoize so it only recomputes when users/page changes
+  const remainingUsers = useMemo(
+    () => (page === 1 ? users.slice(3) : users),
+    [users, page]
+  );
+
+  // Fix 1 & 2: re-fetch on page, category, or period change
   useEffect(() => {
     const fetchUserData = async () => {
+      setLoading(true);
       try {
-        const res = await getUsersByRanking(category);
+        // Fix 2: pass page (and period if your API supports it)
+        const res = await getUsersByRanking(category, page);
 
         if (!res.ok) {
-          dispatch(showMessage({
-            messageType: 'error',
-            messsage: res.message
-          }))
+          dispatch(showMessage({ messageType: 'error', messsage: res.message }));
           return;
         }
-        setUser(res.data?.users)
-        setTotalUsers(res?.data?.total)
-        console.log(res.data, '<---- user data')
+        setUsers(res.data?.users ?? []);
+        setTotalUsers(res.data?.total ?? 0);
       } catch (error) {
-        console.warn(error)
+        console.warn(error);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
 
     fetchUserData();
-  }, [])
+  }, [category, page]); // Fix 1: proper deps
+
+  // Fix 7: reset to page 1 whenever category or period changes
+  const handleCategoryChange = (c: RankingCategory) => {
+    setCategory(c);
+    setPage(1);
+  };
+
+  const handlePeriodChange = (p: RankingPeriod) => {
+    // setPeriod(p);
+    setPage(1);
+  };
+
+  // Fix 4: dynamic page window (shows 5 pages around current)
+  const getPageNumbers = () => {
+    const delta = 2; // pages on each side of current
+    const range: (number | '...')[] = [];
+    const rangeStart = Math.max(2, page - delta);
+    const rangeEnd = Math.min(totalPages - 1, page + delta);
+
+    range.push(1); // always show first
+
+    if (rangeStart > 2) range.push('...');
+
+    for (let i = rangeStart; i <= rangeEnd; i++) range.push(i);
+
+    if (rangeEnd < totalPages - 1) range.push('...');
+
+    if (totalPages > 1) range.push(totalPages); // always show last
+
+    return range;
+  };
 
   return (
     <div className='min-h-screen bg-slate-50'>
       <RankingHeader />
       <FilterBar
-        period={period}
+        // period={period}
         category={category}
-        onPeriodChange={setPeriod}
-        onCategoryChange={setCategory}
+        // onPeriodChange={handlePeriodChange}   // Fix 7
+        onCategoryChange={handleCategoryChange} // Fix 7
       />
 
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {/* Top 3 Users */}
-        <div className='mb-12'>
-          <h2 className='text-2xl font-bold text-slate-900 mb-6 text-center'>
-            Top Contributors
-          </h2>
-          <div className='grid md:grid-cols-3 gap-6'>
-            {users.slice(0, 3).map((data, idx) => (
-              <TopThreeCard key={idx} user={data} position={(idx + 1) as Position} />
-            ))}
-          </div>
-        </div>
-
-        {/* Main Content Grid */}
-        <div className='grid lg:grid-cols-12 gap-6'>
-          {/* Rankings List */}
-          <div className='lg:col-span-8'>
-            <h2 className='text-xl font-bold text-slate-900 mb-4'>
-              All Rankings
+        {page === 1 && !loading && (
+          <div className='mb-12'>
+            <h2 className='text-2xl font-bold text-slate-900 mb-6 text-center'>
+              Top Contributors
             </h2>
-            <div className='space-y-3'>
-              {remainingUsers.map((user: UserProfile) => (
-                <UserRankCard key={user._id} user={user} />
+            <div className='grid md:grid-cols-3 gap-6'>
+              {users.slice(0, 3).map((data, idx) => (
+                <TopThreeCard key={data._id} user={data} position={(idx + 1) as Position} />
               ))}
             </div>
+          </div>
+        )}
 
-            {/* Pagination */}
-            <div className='mt-6 flex justify-center gap-2'>
-              <button className='px-4 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50 font-medium'>
-                Previous
-              </button>
-              <button className='px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium'>
-                1
-              </button>
-              <button className='px-4 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50 font-medium'>
-                2
-              </button>
-              <button className='px-4 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50 font-medium'>
-                3
-              </button>
-              <button className='px-4 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50 font-medium'>
-                Next
-              </button>
-            </div>
+        <div className='grid lg:grid-cols-12 gap-6'>
+          <div className='lg:col-span-8'>
+            <h2 className='text-xl font-bold text-slate-900 mb-4'>All Rankings</h2>
+            {loading ? (
+              <div className='flex justify-center py-12'>
+                <span className='text-slate-400 text-sm'>Loading...</span>
+              </div>
+            ) : (
+              <div className='space-y-3'>
+                {remainingUsers.map((user: UserProfile) => (
+                  <UserRankCard key={user._id} user={user} />
+                ))}
+              </div>
+            )}
+
+            {/* Fix 4: Dynamic pagination */}
+            {totalPages > 1 && (
+              <div className='mt-6 flex justify-center items-center gap-2'>
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className='px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium
+                             hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed'
+                >
+                  Previous
+                </button>
+
+                {getPageNumbers().map((num, idx) =>
+                  num === '...' ? (
+                    <span key={`ellipsis-${idx}`} className='px-2 text-slate-400 select-none'>
+                      ...
+                    </span>
+                  ) : (
+                    <button
+                      key={num}
+                      onClick={() => setPage(num)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${page === num
+                        ? 'bg-blue-600 text-white'
+                        : 'border border-slate-300 hover:bg-slate-50'
+                        }`}
+                    >
+                      {num}
+                    </button>
+                  )
+                )}
+
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className='px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed'>
+                  Next
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Sidebar */}
           <aside className='lg:col-span-4'>
             <StatsSidebar />
           </aside>

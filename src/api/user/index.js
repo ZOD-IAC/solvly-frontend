@@ -20,7 +20,7 @@ export const getQuestionSavedByUser = async (userId) => {
   return res;
 };
 
-export const getUsersByRanking = async (sortby) => {
-  const res = await GET(`/user/api/getusers/?sortby=${sortby}`);
+export const getUsersByRanking = async (sortby, page) => {
+  const res = await GET(`/user/api/getusers/?sortby=${sortby}&page=${page}`);
   return res;
 };
