@@ -2,7 +2,7 @@
 // FILE: types/profile.types.ts
 // ============================================
 export interface UserProfile {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   bio: string;
@@ -12,6 +12,11 @@ export interface UserProfile {
   avatar: string;
   reputation: number;
   createdAt: Date;
+  badges: {
+    gold: number;
+    silver: number;
+    bronze: number;
+  };
   stats: {
     questions: number;
     answers: number;

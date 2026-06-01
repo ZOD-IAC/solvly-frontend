@@ -20,32 +20,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { showMessage } from '@/features/messageSlice';
 import { getUsersByRanking } from '@/api/user';
-
-// ============================================
-// FILE: types/ranking.types.ts
-// ============================================
-interface User {
-  id: number;
-  rank: number;
-  name: string;
-  username: string;
-  avatar: string;
-  reputation: number;
-  badges: {
-    gold: number;
-    silver: number;
-    bronze: number;
-  };
-  stats: {
-    questions: number;
-    answers: number;
-    accepted: number;
-  };
-  rankChange: 'up' | 'down' | 'same';
-  rankChangeValue: number;
-  joinedDate: string;
-  location: string;
-}
+import { UserProfile } from '@/utils/contants/type';
 
 type RankingPeriod = 'weekly' | 'monthly' | 'yearly' | 'alltime';
 type RankingCategory = 'reputation' | 'answers' | 'questions' | 'accepted';
@@ -145,7 +120,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
 // FILE: components/ranking/TopThreeCard.tsx
 // ============================================
 interface TopThreeCardProps {
-  user: User;
+  user: UserProfile;
   position: 1 | 2 | 3;
 }
 
@@ -200,7 +175,7 @@ const TopThreeCard: React.FC<TopThreeCardProps> = ({ user, position }) => {
               .join('')}
           </div>
           <h3 className='text-xl font-bold text-slate-900 mb-1'>{user.name}</h3>
-          <p className='text-slate-500 text-sm mb-2'>@{user.username}</p>
+          <p className='text-slate-500 text-sm mb-2'>@{user.email}</p>
           <div
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${colors[position].bg} bg-linear-to-r text-white font-bold text-lg shadow-sm`}
           >
@@ -267,7 +242,7 @@ const TopThreeCard: React.FC<TopThreeCardProps> = ({ user, position }) => {
 // FILE: components/ranking/UserRankCard.tsx
 // ============================================
 interface UserRankCardProps {
-  user: User;
+  user: UserProfile;
 }
 
 const UserRankCard: React.FC<UserRankCardProps> = ({ user }) => {
@@ -280,8 +255,8 @@ const UserRankCard: React.FC<UserRankCardProps> = ({ user }) => {
   return (
     <div className='bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-all hover:border-blue-300'>
       <div className='flex items-center gap-4'>
-        {/* Rank */}
-        <div className='flex flex-col items-center min-w-15'>
+        {/* Rank change will be integrate later*/}
+        {/* <div className='flex flex-col items-center min-w-15'>
           <span className={`text-2xl ${getRankColor(user.rank)}`}>
             #{user.rank}
           </span>
@@ -298,7 +273,7 @@ const UserRankCard: React.FC<UserRankCardProps> = ({ user }) => {
               {user.rankChangeValue}
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Avatar */}
         <div className='w-14 h-14 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-lg font-bold shrink-0'>
@@ -313,8 +288,8 @@ const UserRankCard: React.FC<UserRankCardProps> = ({ user }) => {
           <h3 className='text-lg font-semibold text-slate-900 truncate'>
             {user.name}
           </h3>
-          <p className='text-sm text-slate-500'>@{user.username}</p>
-          <p className='text-xs text-slate-400'>{user.location}</p>
+          <p className='text-sm text-slate-500'>@{user.email}</p>
+          <p className='text-xs text-slate-400'>location : {user.location != '' ? user.location : "this universe"}</p>
         </div>
 
         {/* Reputation */}
@@ -473,8 +448,8 @@ const RankingPage: React.FC = () => {
   const [period, setPeriod] = useState<RankingPeriod>('alltime');
   const [category, setCategory] = useState<RankingCategory>('reputation');
   const [users, setUser] = useState([]);
-  const [page , setPage] = useState(1);
-  const [totalUsers  ,setTotalUsers] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalUsers, setTotalUsers] = useState(0);
   const remainingUsers = page == 1 ? users.slice(3) : users
   const dispatch = useDispatch();
 
@@ -532,7 +507,7 @@ const RankingPage: React.FC = () => {
               All Rankings
             </h2>
             <div className='space-y-3'>
-              {remainingUsers.map((user : User) => (
+              {remainingUsers.map((user: UserProfile) => (
                 <UserRankCard key={user._id} user={user} />
               ))}
             </div>
