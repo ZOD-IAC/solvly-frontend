@@ -30,7 +30,7 @@ const UserQuestionsSidebar: React.FC<{
         );
         return;
       }
-      setUserQuestion(res?.questions);
+      setUserQuestion(res?.data?.questions);
     };
 
     fetchUserQuestion();
