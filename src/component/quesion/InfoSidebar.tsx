@@ -36,7 +36,7 @@ const InfoSidebar: React.FC = () => {
   }, []);
 
   return (
-    <div className='space-y-4'>
+    <div className='space-y-4 sticky top-20'>
       {/* Quick Stats */}
       <div className='bg-linear-to-br from-[#3E3F29] to-[#1d1e12] text-white rounded-lg p-4'>
         <h3 className='font-semibold mb-3 flex items-center gap-2'>

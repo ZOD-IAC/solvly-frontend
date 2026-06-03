@@ -8,7 +8,7 @@ async function page({ searchParams }: any) {
 
   return (
     <div>
-      <QuestionsPage data={data} />
+      <QuestionsPage params={query} />
     </div>
   );
 }
