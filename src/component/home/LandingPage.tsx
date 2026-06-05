@@ -107,12 +107,12 @@ const LandingPage = () => {
             setQuestion([]);
             return;
           }
-          if (!res?.questions?.length) {
+          if (!res?.data?.questions?.length) {
             dispatch(showMessage({ messageType: 'info', message: res.message }));
             setQuestion([]);
             return;
           }
-          setQuestion(res.questions);
+          setQuestion(res?.data?.questions);
         } catch (err) {
           console.warn(err, 'something went wrong!');
         } finally {
@@ -202,15 +202,16 @@ const LandingPage = () => {
                   </span>
                   <span className={styles.resultsLabel}>Questions</span>
                 </li>
-
-                {questions.map((d: any) => (
-                  <Link key={d._id} href={`/question/${d?._id}`}>
-                    <li className={styles.resultItem}>
-                      <Search size={13} className={styles.resultIcon} />
-                      {d.title}
-                    </li>
-                  </Link>
-                ))}
+                <div className='h-56 overflow-auto'>
+                  {questions.map((d: any) => (
+                    <Link key={d._id} href={`/question/${d?._id}`}>
+                      <li className={styles.resultItem}>
+                        <Search size={13} className={styles.resultIcon} />
+                        {d.title}
+                      </li>
+                    </Link>
+                  ))}
+                </div>
               </ul>
             </div>
           )}
