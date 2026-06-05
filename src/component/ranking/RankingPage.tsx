@@ -21,6 +21,7 @@ import { useDispatch } from 'react-redux';
 import { showMessage } from '@/features/messageSlice';
 import { getUsersByRanking } from '@/api/user';
 import { User } from '@/utils/contants/type';
+import Link from 'next/link';
 
 type RankingPeriod = 'weekly' | 'monthly' | 'yearly' | 'alltime';
 type RankingCategory = 'reputation' | 'answers' | 'questions' | 'accepted';
@@ -169,12 +170,15 @@ const TopThreeCard: React.FC<TopThreeCardProps> = ({ user, position }) => {
           <div
             className={`w-24 h-24 bg-linear-to-br ${colors[position].bg} rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4 shadow-lg ring-4 ring-white`}
           >
+
             {user.name
               .split(' ')
               .map((n) => n[0])
               .join('')}
           </div>
-          <h3 className='text-xl font-bold text-slate-900 mb-1'>{user.name}</h3>
+          <Link href={`/profile/${user._id}`}>
+            <h3 className='text-xl font-bold text-slate-900 mb-1'>{user.name}</h3>
+          </Link>
           <p className='text-slate-500 text-sm mb-2'>@{user.email}</p>
           <div
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${colors[position].bg} bg-linear-to-r text-white font-bold text-lg shadow-sm`}
@@ -552,7 +556,9 @@ const RankingPage: React.FC = () => {
             ) : (
               <div className='space-y-3'>
                 {remainingUsers.map((user: User) => (
-                  <UserRankCard key={user._id} user={user} />
+                  <Link href={`/profile/${user._id}`} key={user._id}>
+                    <UserRankCard user={user} />
+                  </Link>
                 ))}
               </div>
             )}
