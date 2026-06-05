@@ -32,6 +32,8 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ params }) => {
   const currentPage = Math.max(1, Number(searchParams.get('page') || 1));
   const totalPages  = Math.ceil(total / LIMIT);
 
+  const stableParams = useMemo(()=> params, [JSON.stringify(params)])
+
   // Re-fetch whenever any URL param changes (page, sort, title, tags, etc.)
   useEffect(() => {
     const fetchQuestionData = async () => {
@@ -55,7 +57,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ params }) => {
     };
 
     fetchQuestionData();
-  }, [params]); // params object changes whenever URL changes — covers page + all filters
+  }, [stableParams]); // params object changes whenever URL changes — covers page + all filters
 
   // Push new page into URL — SearchFilterBar and this share the same URL
   const goToPage = (p: number) => {
