@@ -62,12 +62,13 @@ const ProfilePage: React.FC<Id> = ({ userId }) => {
           router.replace(`?${query.toString()}`)
           return
         }
-
-        if (tab == "ask" && data?.user?.id !== userId){
-          const query = new URLSearchParams(window.location.search);
-          query.set('tab', 'profile');
-          router.replace(`?${query.toString()}`)
-          return
+        if(data){
+          if (tab == "ask" && data?.user?.id !== userId){
+            const query = new URLSearchParams(window.location.search);
+            query.set('tab', 'profile');
+            router.replace(`?${query.toString()}`)
+            return
+          }
         }
 
         if (tab) {
