@@ -63,6 +63,13 @@ const ProfilePage: React.FC<Id> = ({ userId }) => {
           return
         }
 
+        if (tab == "ask" && data?.user?.id !== userId){
+          const query = new URLSearchParams(window.location.search);
+          query.set('tab', 'profile');
+          router.replace(`?${query.toString()}`)
+          return
+        }
+
         if (tab) {
           setActiveTab(tab as TabType);
         } else {
@@ -143,7 +150,7 @@ const ProfilePage: React.FC<Id> = ({ userId }) => {
   return (
     <div className='min-h-screen bg-slate-50'>
       <ProfileHeader user={data?.user} isOwnProfile={isOwnProfile} />
-      <TabNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+      <TabNavigation userId={userId} activeTab={activeTab} onTabChange={handleTabChange} />
 
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         <div className='grid lg:grid-cols-12 gap-6'>
@@ -153,7 +160,7 @@ const ProfilePage: React.FC<Id> = ({ userId }) => {
             {activeTab === 'questions' && (
               <QuestionsTab question={data?.question} />
             )}
-            {activeTab === 'answers' && <AnswersTab />}
+            {activeTab === 'answers' && <AnswersTab userId={userId} />}
             {activeTab === 'badges' && <BadgesTab badges={badges} />}
             {activeTab === 'activity' && <ActivityTab />}
             {activeTab === 'saved' && <SavedTab userId={userId} />}

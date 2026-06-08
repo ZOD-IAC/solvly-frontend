@@ -1,10 +1,8 @@
 'use client';
-import { X } from 'lucide-react';
 import Button from '../Button/Button';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { showMessage } from '@/features/messageSlice';
-import { BASE_URL } from '@/utils/Setting';
 import CustomEditor from '../editor/CustomEditor';
 import DebounceSelect from '../common/DebounceSelect';
 import {

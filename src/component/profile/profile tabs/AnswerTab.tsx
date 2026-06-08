@@ -48,17 +48,20 @@ const AnswerCard: React.FC<{ answer: Answer }> = ({ answer }) => {
   );
 };
 
-export const AnswersTab: React.FC = () => {
+type ProfilePageParams = {
+  userId: string;
+};
+
+export const AnswersTab: React.FC<ProfilePageParams> = ({ userId }) => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [filter, setFilter] = useState<'all' | 'accepted'>('all');
-  const { user } = useSelector((s: any) => s.auth);
 
   useEffect(() => {
     const fetchAnswers = async () => {
       try {
-        if (!user) return;
+        if (!userId) return;
         const params = {
-          userId: user.id,
+          userId: userId,
         };
         const res = await getAnswers(params);
         if (!res.ok) {

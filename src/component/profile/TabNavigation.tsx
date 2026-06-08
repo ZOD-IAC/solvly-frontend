@@ -14,13 +14,15 @@ import { useSelector } from 'react-redux';
 interface TabNavigationProps {
   activeTab?: TabType;
   onTabChange: (tab: TabType) => void;
+  userId : string;
 }
 
 export const TabNavigation: React.FC<TabNavigationProps> = ({
   activeTab,
   onTabChange,
+  userId
 }) => {
-  const { isAuthenticated } = useSelector((state: any) => state.auth)
+  const { isAuthenticated , user } = useSelector((state: any) => state.auth)
   const tabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
     { id: 'profile', label: 'Profile', icon: <User className='w-4 h-4' /> },
     {
@@ -54,6 +56,7 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({
           {tabs.map((tab) => {
 
             if (!isAuthenticated && tab.id == 'ask') return
+            if(isAuthenticated && userId !== user?.id && tab.id == 'ask') return
             return (
               <button
                 key={tab.id}
