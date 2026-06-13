@@ -15,7 +15,7 @@ const navLinks = [
   { label: 'About Us', href: '/about-us' },
   { label: 'Questions', href: '/question' },
   { label: 'Ranking', href: '/ranking' },
-  { label: 'Trending', href: '/trending' },
+  // { label: 'Trending', href: '/trending' },
 ];
 
 function Navbar() {
