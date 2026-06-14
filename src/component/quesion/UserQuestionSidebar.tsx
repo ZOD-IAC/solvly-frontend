@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { showMessage } from '@/features/messageSlice';
 import { Question, UserProfile } from '@/utils/contants/type';
 import Link from 'next/link';
+import { makeURLPattern } from '@/utils/helper';
 
 // User Questions Sidebar Component
 const UserQuestionsSidebar: React.FC<{
@@ -64,7 +65,7 @@ const UserQuestionsSidebar: React.FC<{
             key={q._id}
             className='pb-3 border-b border-slate-100 last:border-0'
           >
-            <Link href={`/question/${q._id}`}>
+            <Link href={`/question/${makeURLPattern({ url: q.title })}/`}>
               <h4 className='text-sm font-medium text-slate-800 hover:text-blue-600 cursor-pointer mb-2 line-clamp-2'>
                 {q.title}
               </h4>

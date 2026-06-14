@@ -1,6 +1,3 @@
-import { saveQuestgion } from '@/api/question';
-import { stringify } from 'querystring';
-
 export const getDataFromlocal = () => {
   if (typeof localStorage != 'object') return {};
   const data = localStorage.getItem('auth') ?? '{}';
@@ -35,4 +32,17 @@ export const stripHtml = (html) => {
   const tmp = document.createElement('div');
   tmp.innerHTML = html;
   return tmp.textContent || tmp.innerText || '';
+};
+
+export const makeURLPattern = ({ url }) => {
+  if (!url) return '';
+
+  const pattern = url
+    .trim()
+    .split(' ')
+    .join('-')
+    .replaceAll('?', '%3F')
+    .replaceAll('/', '%2F');
+
+  return pattern;
 };

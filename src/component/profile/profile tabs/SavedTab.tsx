@@ -7,6 +7,44 @@ import { showMessage } from '@/features/messageSlice';
 import { useDispatch } from 'react-redux';
 import Link from 'next/link';
 import { saveQuestion } from '@/api/question';
+import { Question } from '@/utils/contants/type';
+import { makeURLPattern } from '@/utils/helper';
+type proptype = {
+  question: Question;
+  handleUnsave: any;
+};
+
+export const SavedCard = ({ question, handleUnsave }: proptype) => {
+  const questionPattern = makeURLPattern({ url: question.title });
+
+  return (
+    <div className='bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow'>
+      <div className='flex items-start justify-between gap-4'>
+        <div className='flex items-start gap-3 flex-1'>
+          <Bookmark className='w-5 h-5 text-red-600 mt-1' fill='#b13112' />
+          <div>
+            <Link href={`/question/${questionPattern}/`}>
+              <h3 className='text-lg font-semibold text-blue-600 hover:text-blue-700 cursor-pointer mb-1'>
+                {question?.title}
+              </h3>
+            </Link>
+            <div className='flex items-center gap-2 text-xs text-slate-500'>
+              <span className='capitalize'>question</span>
+              <span>•</span>
+              <span>Saved {new Date(question?.createdAt).toDateString()}</span>
+            </div>
+          </div>
+        </div>
+        <button
+          onClick={() => handleUnsave(question._id)}
+          className='text-slate-400 hover:text-red-600'
+        >
+          <X className='w-5 h-5' />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 // ============================================
 export const SavedTab: React.FC<{ userId: string }> = ({ userId }) => {
@@ -60,35 +98,12 @@ export const SavedTab: React.FC<{ userId: string }> = ({ userId }) => {
         </h2>
       </div>
 
-      {savedQuestion.map((item: any) => (
-        <div
-          key={item._id}
-          className='bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow'
-        >
-          <div className='flex items-start justify-between gap-4'>
-            <div className='flex items-start gap-3 flex-1'>
-              <Bookmark className='w-5 h-5 text-red-600 mt-1' fill='#b13112' />
-              <div>
-                <Link href={`/question/${item?.question?.id}`}>
-                  <h3 className='text-lg font-semibold text-blue-600 hover:text-blue-700 cursor-pointer mb-1'>
-                    {item?.question?.title}
-                  </h3>
-                </Link>
-                <div className='flex items-center gap-2 text-xs text-slate-500'>
-                  <span className='capitalize'>question</span>
-                  <span>•</span>
-                  <span>Saved {new Date(item?.createdAt).toDateString()}</span>
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={() => handleUnsave(item.question.id)}
-              className='text-slate-400 hover:text-red-600'
-            >
-              <X className='w-5 h-5' />
-            </button>
-          </div>
-        </div>
+      {savedQuestion.map((item: proptype) => (
+        <SavedCard
+          key={item?.question?._id}
+          question={item?.question}
+          handleUnsave={handleUnsave}
+        />
       ))}
     </div>
   );

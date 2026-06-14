@@ -1,12 +1,20 @@
 'use client';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { MessageSquare, Users, TrendingUp, Search, Loader2, X } from 'lucide-react';
+import {
+  MessageSquare,
+  Users,
+  TrendingUp,
+  Search,
+  Loader2,
+  X,
+} from 'lucide-react';
 import Button from '../Button/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { getQuestionList } from '@/api/question';
 import { showMessage } from '@/features/messageSlice';
 import styles from '../../styles/LandingPage.module.css';
 import Link from 'next/link';
+import { makeURLPattern } from '@/utils/helper';
 
 /* ── Feature card data ──────────────────────────────────────── */
 const FEATURES = [
@@ -73,9 +81,11 @@ const LandingPage = () => {
             (entry.target as HTMLElement).classList.add('lp-visible');
           }
         }),
-      { threshold: 0.12 }
+      { threshold: 0.12 },
     );
-    document.querySelectorAll('.lp-reveal').forEach((el) => observer.observe(el));
+    document
+      .querySelectorAll('.lp-reveal')
+      .forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
 
@@ -102,13 +112,15 @@ const LandingPage = () => {
               showMessage({
                 messageType: 'error',
                 message: res.message ?? 'Unable to fetch Question!',
-              })
+              }),
             );
             setQuestion([]);
             return;
           }
           if (!res?.data?.questions?.length) {
-            dispatch(showMessage({ messageType: 'info', message: res.message }));
+            dispatch(
+              showMessage({ messageType: 'info', message: res.message }),
+            );
             setQuestion([]);
             return;
           }
@@ -120,7 +132,7 @@ const LandingPage = () => {
         }
       }, 350);
     },
-    [dispatch]
+    [dispatch],
   );
 
   const clearSearch = () => {
@@ -129,15 +141,16 @@ const LandingPage = () => {
   };
 
   const showDropdown = isFocused && questions.length > 0;
-  const showEmpty = isFocused && !!searchQuery && !isSearching && questions.length === 0;
+  const showEmpty =
+    isFocused && !!searchQuery && !isSearching && questions.length === 0;
 
   return (
     <div className={styles.page}>
-
       <section className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20'>
         <div className='text-center max-w-3xl mx-auto'>
-
-          <h1 className={`${styles.heroTitle} text-5xl md:text-5xl font-bold text-slate-900 mb-6`}>
+          <h1
+            className={`${styles.heroTitle} text-5xl md:text-5xl font-bold text-slate-900 mb-6`}
+          >
             Every developer has a tab open to{' '}
             <span className='text-blue-600'>Solvly</span>
           </h1>
@@ -147,7 +160,9 @@ const LandingPage = () => {
             questions, sharing knowledge, and building their careers.
           </p>
 
-          <div className={`${styles.heroCta} flex flex-col sm:flex-row gap-4 justify-center`}>
+          <div
+            className={`${styles.heroCta} flex flex-col sm:flex-row gap-4 justify-center`}
+          >
             <Button variant='primary' size='lg' href='/register'>
               Join the Community
             </Button>
@@ -204,7 +219,10 @@ const LandingPage = () => {
                 </li>
                 <div className='h-56 overflow-auto'>
                   {questions.map((d: any) => (
-                    <Link key={d._id} href={`/question/${d?._id}`}>
+                    <Link
+                      key={d._id}
+                      href={`/question/${makeURLPattern({ url: d?.title })}/`}
+                    >
                       <li className={styles.resultItem}>
                         <Search size={13} className={styles.resultIcon} />
                         {d.title}
@@ -223,12 +241,18 @@ const LandingPage = () => {
                 <p className={styles.emptyText}>
                   No questions found for <strong>"{searchQuery}"</strong>
                 </p>
-                {isAuthenticated ?
-                  (<Link href={`/profile/${user.id}/?tab=ask`} className={styles.emptyLink}>
+                {isAuthenticated ? (
+                  <Link
+                    href={`/profile/${user.id}/?tab=ask`}
+                    className={styles.emptyLink}
+                  >
                     Ask this question →
-                  </Link>) : (<Link href='/register' className={styles.emptyLink}>
+                  </Link>
+                ) : (
+                  <Link href='/register' className={styles.emptyLink}>
                     Regsiter to Ask this question →
-                  </Link>)}
+                  </Link>
+                )}
               </div>
             </div>
           )}
@@ -248,10 +272,14 @@ const LandingPage = () => {
                 className={`lp-reveal ${styles.card} bg-white p-8 rounded-xl shadow-sm`}
                 style={{ transitionDelay: f.delay }}
               >
-                <div className={`w-12 h-12 ${f.iconBg} rounded-lg flex items-center justify-center mb-4`}>
+                <div
+                  className={`w-12 h-12 ${f.iconBg} rounded-lg flex items-center justify-center mb-4`}
+                >
                   {f.icon}
                 </div>
-                <h3 className='text-xl font-bold text-slate-900 mb-2'>{f.title}</h3>
+                <h3 className='text-xl font-bold text-slate-900 mb-2'>
+                  {f.title}
+                </h3>
                 <p className='text-slate-600'>{f.desc}</p>
               </div>
             ))}
@@ -264,7 +292,9 @@ const LandingPage = () => {
           <div className='lp-reveal grid md:grid-cols-3 gap-8 text-center'>
             {STATS.map((s, i) => (
               <div key={i} className='lp-stat'>
-                <div className='text-4xl font-bold text-blue-600 mb-2'>{s.value}</div>
+                <div className='text-4xl font-bold text-blue-600 mb-2'>
+                  {s.value}
+                </div>
                 <div className='text-slate-600'>{s.label}</div>
               </div>
             ))}

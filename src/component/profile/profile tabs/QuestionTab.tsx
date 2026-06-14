@@ -6,13 +6,14 @@ import React, { useState } from 'react';
 import { Question } from '../../../utils/contants/type';
 import { Clock } from 'lucide-react';
 import Link from 'next/link';
-import { stripHtml } from '@/utils/helper';
+import { makeURLPattern, stripHtml } from '@/utils/helper';
 
 interface QuestionsTabProps {
   question: Question[];
 }
 
 const QuestionCard: React.FC<{ question: Question }> = ({ question }) => {
+  const questionPattern = makeURLPattern({ url: question.title });
   return (
     <div className='bg-white rounded-lg border border-slate-200 p-5 hover:shadow-md transition-shadow'>
       <div className='flex gap-4'>
@@ -44,7 +45,7 @@ const QuestionCard: React.FC<{ question: Question }> = ({ question }) => {
         </div>
 
         <div className='flex-1'>
-          <Link href={`/question/${question._id}`}>
+          <Link href={`/question/${questionPattern ?? ''}/`}>
             <h3 className='text-lg font-semibold text-blue-600 hover:text-blue-700 cursor-pointer mb-2'>
               {question.title}
             </h3>

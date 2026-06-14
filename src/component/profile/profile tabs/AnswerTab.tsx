@@ -6,9 +6,10 @@ import { Answer } from '../../../utils/contants/type';
 import React, { useEffect, useState } from 'react';
 import { AnswersTabProps } from '@/utils/contants/type';
 import { getAnswers } from '../../../api/answer/index';
-import { stripHtml } from '@/utils/helper';
+import { makeURLPattern, stripHtml } from '@/utils/helper';
 import { useSelector } from 'react-redux';
 const AnswerCard: React.FC<{ answer: Answer }> = ({ answer }) => {
+  const questionPattern = makeURLPattern({ url: answer.question[0].title });
   return (
     <div className='bg-white rounded-lg border border-slate-200 p-5 hover:shadow-md transition-shadow'>
       <div className='flex gap-4'>
@@ -29,7 +30,7 @@ const AnswerCard: React.FC<{ answer: Answer }> = ({ answer }) => {
           <h3 className='text-lg font-semibold text-slate-900 mb-2'>
             Answer to:{' '}
             <a
-              href={`/question/${answer.question[0]._id}`}
+              href={`/question/${questionPattern}/`}
               className='text-blue-600 hover:text-blue-700 cursor-pointer'
             >
               {answer.question[0]?.title}
@@ -93,19 +94,21 @@ export const AnswersTab: React.FC<ProfilePageParams> = ({ userId }) => {
         <div className='flex gap-2'>
           <button
             onClick={() => setFilter('all')}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${filter === 'all'
-              ? 'bg-blue-600 text-white'
-              : 'bg-slate-100 text-slate-700'
-              }`}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+              filter === 'all'
+                ? 'bg-blue-600 text-white'
+                : 'bg-slate-100 text-slate-700'
+            }`}
           >
             All
           </button>
           <button
             onClick={() => setFilter('accepted')}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${filter === 'accepted'
-              ? 'bg-green-600 text-white'
-              : 'bg-slate-100 text-slate-700'
-              }`}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+              filter === 'accepted'
+                ? 'bg-green-600 text-white'
+                : 'bg-slate-100 text-slate-700'
+            }`}
           >
             Accepted
           </button>

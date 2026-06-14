@@ -1,7 +1,8 @@
-import { GET, POST, PUT, DELETE_REQ } from "../../utils/api";
+import { makeURLPattern } from '@/utils/helper';
+import { GET, POST, PUT, DELETE_REQ } from '../../utils/api';
 
 export const createQuestion = (body) => {
-  const res = POST("/question/create-question", body);
+  const res = POST('/question/create-question', body);
   return res;
 };
 
@@ -27,7 +28,7 @@ export const getUserRecentQuestion = (user) => {
 };
 
 export const getStatsData = async () => {
-  const res = GET("/question/api/getStats/");
+  const res = GET('/question/api/getStats/');
   return res;
 };
 
@@ -37,8 +38,8 @@ export const saveQuestion = async (questionId) => {
   return res;
 };
 
-export const getQuestionDetail = async (questionId) => {
-  const url = `/question/api/get-question/${questionId}`;
+export const getQuestionDetail = async (questionTitle) => {
+  const url = `/question/api/${questionTitle}/`;
   const res = GET(url);
 
   return res;

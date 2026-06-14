@@ -1,1 +1,1 @@
-export const BASE_URL = 'https://api.solvly.website';
+export const BASE_URL = 'http://localhost:5000';
