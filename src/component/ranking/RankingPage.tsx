@@ -171,20 +171,20 @@ const TopThreeCard: React.FC<TopThreeCardProps> = ({ user, position }) => {
             className={`w-24 h-24 bg-linear-to-br ${colors[position].bg} rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4 shadow-lg ring-4 ring-white`}
           >
 
-            {user.name
+            {user?.name
               .split(' ')
               .map((n) => n[0])
               .join('')}
           </div>
-          <Link href={`/profile/${user._id}`}>
-            <h3 className='text-xl font-bold text-slate-900 mb-1'>{user.name}</h3>
+          <Link href={`/profile/${user?._id}`}>
+            <h3 className='text-xl font-bold text-slate-900 mb-1'>{user?.name}</h3>
           </Link>
-          <p className='text-slate-500 text-sm mb-2'>@{user.email}</p>
+          <p className='text-slate-500 text-sm mb-2'>@{user?.email}</p>
           <div
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${colors[position].bg} bg-linear-to-r text-white font-bold text-lg shadow-sm`}
           >
             <Star className='w-5 h-5' />
-            {user.reputation.toLocaleString()}
+            {user?.reputation.toLocaleString()}
           </div>
         </div>
 
@@ -192,19 +192,19 @@ const TopThreeCard: React.FC<TopThreeCardProps> = ({ user, position }) => {
         <div className='px-6 pb-6 grid grid-cols-3 gap-3'>
           <div className='text-center'>
             <div className='text-2xl font-bold text-slate-900'>
-              {user.stats.questions}
+              {user?.stats?.questions}
             </div>
             <div className='text-xs text-slate-500'>Questions</div>
           </div>
           <div className='text-center'>
             <div className='text-2xl font-bold text-slate-900'>
-              {user.stats.answers}
+              {user?.stats?.answers}
             </div>
             <div className='text-xs text-slate-500'>Answers</div>
           </div>
           <div className='text-center'>
             <div className='text-2xl font-bold text-green-600'>
-              {user.stats.accepted}
+              {user?.stats?.accepted}
             </div>
             <div className='text-xs text-slate-500'>Accepted</div>
           </div>
@@ -281,7 +281,7 @@ const UserRankCard: React.FC<UserRankCardProps> = ({ user }) => {
 
         {/* Avatar */}
         <div className='w-14 h-14 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-lg font-bold shrink-0'>
-          {user.name
+          {user?.name
             .split(' ')
             .map((n) => n[0])
             .join('')}
@@ -290,10 +290,10 @@ const UserRankCard: React.FC<UserRankCardProps> = ({ user }) => {
         {/* User Info */}
         <div className='flex-1 min-w-0'>
           <h3 className='text-lg font-semibold text-slate-900 truncate'>
-            {user.name}
+            {user?.name}
           </h3>
-          <p className='text-sm text-slate-500'>@{user.email}</p>
-          <p className='text-xs text-slate-400'>location : {user.location != '' ? user.location : "this universe"}</p>
+          <p className='text-sm text-slate-500'>@{user?.email}</p>
+          <p className='text-xs text-slate-400'>location : {user?.location != '' ? user?.location : "this universe"}</p>
         </div>
 
         {/* Reputation */}
@@ -301,7 +301,7 @@ const UserRankCard: React.FC<UserRankCardProps> = ({ user }) => {
           <div className='flex items-center gap-2 justify-end mb-1'>
             <Star className='w-5 h-5 text-amber-500' />
             <span className='text-xl font-bold text-slate-900'>
-              {user.reputation.toLocaleString()}
+              {user?.reputation.toLocaleString()}
             </span>
           </div>
           <p className='text-xs text-slate-500'>reputation</p>
@@ -312,21 +312,21 @@ const UserRankCard: React.FC<UserRankCardProps> = ({ user }) => {
           <div className='text-center'>
             <div className='flex items-center gap-1 text-slate-700 mb-1'>
               <MessageSquare className='w-4 h-4' />
-              <span className='font-semibold'>{user.stats.questions}</span>
+              <span className='font-semibold'>{user?.stats.questions}</span>
             </div>
             <p className='text-xs text-slate-500'>Questions</p>
           </div>
           <div className='text-center'>
             <div className='flex items-center gap-1 text-slate-700 mb-1'>
               <ThumbsUp className='w-4 h-4' />
-              <span className='font-semibold'>{user.stats.answers}</span>
+              <span className='font-semibold'>{user?.stats.answers}</span>
             </div>
             <p className='text-xs text-slate-500'>Answers</p>
           </div>
           <div className='text-center'>
             <div className='flex items-center gap-1 text-green-600 mb-1'>
               <CheckCircle className='w-4 h-4' />
-              <span className='font-semibold'>{user.stats.accepted}</span>
+              <span className='font-semibold'>{user?.stats.accepted}</span>
             </div>
             <p className='text-xs text-slate-500'>Accepted</p>
           </div>
@@ -433,8 +433,8 @@ const StatsSidebar: React.FC = () => {
             { name: 'Ryan Park', gain: '+367 pts' },
           ].map((user, i) => (
             <div key={i} className='flex items-center justify-between text-sm'>
-              <span className='text-slate-700 font-medium'>{user.name}</span>
-              <span className='text-green-600 font-semibold'>{user.gain}</span>
+              <span className='text-slate-700 font-medium'>{user?.name}</span>
+              <span className='text-green-600 font-semibold'>{user?.gain}</span>
             </div>
           ))}
         </div>
@@ -556,7 +556,7 @@ const RankingPage: React.FC = () => {
             ) : (
               <div className='space-y-3'>
                 {remainingUsers.map((user: User) => (
-                  <Link href={`/profile/${user._id}`} key={user._id}>
+                  <Link href={`/profile/${user?._id}`} key={user?._id}>
                     <UserRankCard user={user} />
                   </Link>
                 ))}

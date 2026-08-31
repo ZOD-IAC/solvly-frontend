@@ -243,7 +243,7 @@ const LandingPage = () => {
                 </p>
                 {isAuthenticated ? (
                   <Link
-                    href={`/profile/${user.id}/?tab=ask`}
+                    href={`/profile/${user?.id}/?tab=ask`}
                     className={styles.emptyLink}
                   >
                     Ask this question →

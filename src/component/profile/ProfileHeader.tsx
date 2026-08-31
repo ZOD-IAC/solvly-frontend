@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Calendar, Edit, LinkIcon, MapPin, Share2, Star } from 'lucide-react';
 import { UserProfile } from '../../utils/contants/type';
-import { useDispatch } from 'react-redux';
 import UserAvatar from '../common/UserAvatar';
 
 interface ProfileHeaderProps {
@@ -13,6 +12,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   user,
   isOwnProfile,
 }) => {
+  // if(!user) return;
   return (
     <div className='bg-white border-b border-slate-200'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
@@ -24,7 +24,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             ) : (
               <div className='w-32 h-32 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-4xl font-bold shadow-lg'>
                 {user?.name ||
-                  'harshit'
+                  'Harshit'
                     .split(' ')
                     .map((n) => n[0])
                     .join('')}
@@ -44,7 +44,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 <h1 className='text-3xl font-bold text-slate-900 mb-1'>
                   {user?.name}
                 </h1>
-                <p className='text-lg text-slate-600'>@{user.email}</p>
+                <p className='text-lg text-slate-600'>@{user?.email || "NoUser@found"}</p>
               </div>
               <div className='flex gap-2'>
                 {isOwnProfile ? (

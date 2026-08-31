@@ -16,7 +16,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ user }) => {
       <div className='bg-white rounded-lg border border-slate-200 p-6'>
         <h2 className='text-xl font-bold text-slate-900 mb-4'>About</h2>
         <p className='text-slate-600 leading-relaxed'>
-          {user.bio || 'Some Bio need to be here'}
+          {user?.bio || 'Some Bio need to be here'}
         </p>
       </div>
 

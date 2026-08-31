@@ -29,19 +29,19 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user }) => {
           <div className='flex justify-between items-center'>
             <span className='text-slate-600 text-sm'>Questions</span>
             <span className='font-bold text-slate-900'>
-              {user.stats.questions}
+              {user?.stats?.questions}
             </span>
           </div>
           <div className='flex justify-between items-center'>
             <span className='text-slate-600 text-sm'>Answers</span>
             <span className='font-bold text-slate-900'>
-              {user.stats.answers}
+              {user?.stats?.answers}
             </span>
           </div>
           <div className='flex justify-between items-center'>
             <span className='text-slate-600 text-sm'>Acceptance Rate</span>
             <span className='font-bold text-green-600'>
-              {Math.round((user.stats.accepted / user.stats.answers) * 100)}%
+              {Math.round((user?.stats?.accepted / user?.stats?.answers) * 100)}%
             </span>
           </div>
         </div>

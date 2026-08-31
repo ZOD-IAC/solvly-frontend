@@ -85,14 +85,14 @@ function Navbar() {
               {isAuthenticated ? (
                 <>
                   <span className={styles.userGreeting}>
-                    hi, <span className={styles.userName}>{user.name}</span>
+                    hi, <span className={styles.userName}>{user?.name}</span>
                   </span>
-                  {user.avatar ? (
+                  {user?.avatar ? (
                     <Link
-                      href={`/profile/${user.id}`}
+                      href={`/profile/${user?.id}`}
                       className={styles.avatarRing}
                     >
-                      <UserAvatar svg={user.avatar} />
+                      <UserAvatar svg={user?.avatar} />
                     </Link>
                   ) : (
                     <Link
@@ -184,7 +184,7 @@ function Navbar() {
                 onClick={closeDrawer}
               >
                 {user?.avatar ? (
-                  <UserAvatar svg={user.avatar} />
+                  <UserAvatar svg={user?.avatar} />
                 ) : (
                   <div className={styles.drawerUserIcon}>
                     <User2 size={20} color='#fff' />
